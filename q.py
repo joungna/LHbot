@@ -42,20 +42,15 @@ def create_qa_chain(vector_db, openai_api_key):
         return_source_documents=True
     )
 
-def display_source_info(source):
+def display_source_info(source, index):
     st.markdown("#### 출처 상세 정보")
-    st.text_area("내용", source.page_content, height=150)
+    st.text_area(f"내용_{index}", source.page_content, height=150)
     st.json(source.metadata)
 
 def main():
     st.title("LH특화주택공모지침QnA시스템")
 
     st.write(f"현재 작업 디렉토리: {os.getcwd()}")
-
-    # openai_api_key = st.text_input("OpenAI API 키를 입력하세요:", type="password")
-    # if not openai_api_key:
-    #     st.warning("OpenAI API 키를 입력해주세요.")
-    #     return
 
     index_name = st.text_input("사용할 FAISS 인덱스 파일 이름을 입력하세요 (확장자 제외):", "faiss_index")
     
@@ -95,7 +90,7 @@ def main():
                     st.markdown("### 출처")
                     for i, doc in enumerate(result['source_documents']):
                         with st.expander(f"출처 {i+1}"):
-                            display_source_info(doc)
+                            display_source_info(doc, i)
         
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
